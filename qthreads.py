@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QDialog, QPushButton, QVBoxLayout, QLa
 import sys
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 import time
+import schedule
 
 class Thread(QThread):
     updateSignal = pyqtSignal()
@@ -11,9 +12,13 @@ class Thread(QThread):
         self.time = time
 
     def run(self):
+        schedule.every(self.time).seconds.do(self.task)
         while True:
-            time.sleep(self.time)
-            self.updateSignal.emit()
+            schedule.run_pending()
+            time.sleep(0.1)
+
+    def task(self):
+        print("Hola desde el nuevo Thread")
 
 
 class Main(QDialog):
@@ -32,9 +37,9 @@ class Main(QDialog):
         vbox.addWidget(boton)
 
         #Definir nuevo hilo
-        t = 1 # repite task2 cada t segundos
+        t = 5 # repite task cada t segundos
         self.thread = Thread(t)
-        self.thread.updateSignal.connect(self.task2)
+        self.thread.updateSignal.connect(self.task2) # comunicación entre Threads
         self.thread.start()
         self.show()
 
@@ -42,7 +47,7 @@ class Main(QDialog):
         print("Hola desde el Thread principal")
 
     def task2(self):
-        print("Hola desde nuevo Thread")
+        print("Comunicación entre Threads")
 
 App = QApplication(sys.argv)
 window = Main()
