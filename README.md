@@ -1,2 +1,2 @@
 
-## Manejor de Threads en PyQt5
+## Manejo de Threads en PyQt5
