@@ -19,6 +19,7 @@ class Thread(QThread):
 
     def task(self):
         print("Hola desde el nuevo Thread")
+        self.updateSignal.emit()
 
 
 class Main(QDialog):
